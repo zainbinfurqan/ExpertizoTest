@@ -151,10 +151,30 @@ export default class QuestionPaperCom extends Component {
                             {/* <p className='d-flex  justify-content-end'>Max Score{maxScore}%</p> */}
                             {/* <p className='d-flex justify-content-start'>{(correctAns && questionAttemp) == 0 ? '0' : (correctAns / questionAttemp) * 100}</p> */}
 
-                            <div>
-                                <div className='' style={{ height: 20, backgroundColor: 'blue', width: `${expectedRemaningWrongScore}%` }}></div>
-                                <div className='' style={{ height: 20, backgroundColor: 'red', width: `${currentScore}%` }}></div>
-                                <div className='' style={{ height: 10, backgroundColor: 'green', width: `${expectedRemaningCorrectScore}%` }}></div>
+                            <div className='border' style={{
+                                position: "relative"
+                            }}>
+                                <div className='' style={{
+                                    height: 20,
+                                    top: 0,
+                                    left: 0,
+                                    position: 'absolute', backgroundColor: '#b1adad', width: `${expectedRemaningCorrectScore}%`
+                                }}></div>
+                                <div className='' style={{
+                                    height: 20,
+                                    top: 0,
+                                    left: 0,
+                                    position: 'absolute',
+                                    backgroundColor: '#696565', width: `${currentScore}%`
+                                }}></div>
+
+                                <div className='' style={{
+                                    height: 20,
+                                    top: 0,
+                                    left: 0,
+                                    position: 'absolute',
+                                    backgroundColor: 'black', width: `${expectedRemaningWrongScore}%`
+                                }}></div>
 
                             </div>
 
