@@ -7,14 +7,19 @@ export default class QuestionPaperCom extends Component {
         this.state = {
             questionNo: 10,
             questionData: QuestionPaperData,
-            correctAns: 0,
-            incorrectAns: 0,
+            correctAns: 6,
+            incorrectAns: 3,
             maxScore: 100,
-            questionAttemp: 0,
-            questoinRemaning: QuestionPaperData.length
+            questionAttemp: 9,
+            // questoinRemaning: QuestionPaperData.length,
+            currentScore: 0,
+            expectedRemaningCorrectScore: 0,
+            expectedRemaningWrongScore: 0,
+            remaningQuestion: 11,
+
         }
     }
-  
+
 
     getRateFN = (ind) => {
         // let val_ = questionData[ind].difficulty
@@ -29,25 +34,36 @@ export default class QuestionPaperCom extends Component {
         // )
     }
     checkAnswer(ans) {
-        let { questionNo, questionData, correctAns, questionAttemp } = this.state;
-        console.log(questionNo, questionData.length -1)
-        if (questionNo != questionData.length-1) {
+        let { questionNo,
+            questionData,
+            correctAns,
+            questionAttemp,
+            incorrectAns,
+            currentScore,
+            remaningQuestion } = this.state;
+        console.log(questionNo, questionData.length - 1)
+        if (questionNo != questionData.length - 1) {
             if (questionData[questionNo].correct_answer == ans) {
-                console.log(questionNo++)
                 this.setState({
-                    questionNo: questionNo++,
-                    correctAns: correctAns++,
-                    questionAttemp: questionAttemp++
+                    questionNo: questionNo + 1,
+                    correctAns: correctAns + 1,
+                    questionAttemp: questionAttemp + 1,
+                    remaningQuestion: remaningQuestion - 1
                 })
             } else {
-                console.log("wrong")
+                this.setState({
+                    questionNo: questionNo + 1,
+                    // correctAns: correctAns + 1,
+                    incorrectAns: incorrectAns + 1,
+                    questionAttemp: questionAttemp + 1,
+                    remaningQuestion: remaningQuestion - 1
+                })
             }
         } else {
 
         }
-        // questionData[questionNo].correct_answer == ans ?
-        //     console.log(questionNo++) : console.log("wrong")
     }
+
 
 
     boolenQue = () => {
@@ -69,18 +85,21 @@ export default class QuestionPaperCom extends Component {
         let strFor_2 = rightAns.split("%20").join(" ")
         return (
             <>
-                <div>
-                    <button onClick={() => this.checkAnswer(rightAns)}>
-                        {strFor_2}
-                    </button>
+                <div className='row'>
+                    <div className='col-6  mt-5'>
+                        <button onClick={() => this.checkAnswer(rightAns)}>
+                            {strFor_2}
+                        </button>
+                    </div>
                     {wrongAnsData.map(itm => {
                         strFor_2 = itm.split("%20").join(" ").split("%2C").join(" ")
-
                         return (
                             <>
-                                < button onClick={() => this.checkAnswer(itm)}>
-                                    {strFor_2}
-                                </button>
+                                <div className='col-6 mt-5'>
+                                    < button onClick={() => this.checkAnswer(itm)}>
+                                        {strFor_2}
+                                    </button>
+                                </div>
                             </>
                         )
                     })}
@@ -90,38 +109,59 @@ export default class QuestionPaperCom extends Component {
     }
 
     render() {
-        let { questionNo, questionData, maxScore, correctAns, questionAttemp } = this.state;
-        let str = questionData[questionNo == 1 ? 0 : questionNo].question;
+        let { questionNo, questionData, incorrectAns, maxScore, correctAns, questionAttemp, remaningQuestion } = this.state;
+        let str = questionData[questionNo == 1 ? 0 : questionNo].question.split("%20").join(" ").split("%27").join(" ").split("%3A").join(" ").split("%22").join(" ").split("%2").join(" ").split("%3F").join(" ");
+        questionAttemp = questionNo - 1
+        console.log(correctAns, incorrectAns, questionNo, questionAttemp)
+        let currentScore = (correctAns / questionNo) * 100
+        let expectedRemaningCorrectScore = ((correctAns + remaningQuestion) / questionData.length) * 100
+        let expectedRemaningWrongScore = (correctAns / questionData.length) * 100
         return (
             <>
-                <div className="">
-                    <div className='header-progressbar' style={{
-                        height: 10, backgroundColor: 'red',
-                        width: `${(questionNo / (questionData.length)) * 100}%`
-                    }}>
+                <div className="container-fluid">
+                    <div className='question-panel'>
 
-                    </div>
-                    <div className="question_text w-75 ">
-                        <h1>Question {questionNo == 1 ? 1 : questionNo} of {questionData.length}</h1>
-                        <p>{questionData[questionNo == 1 ? 0 : questionNo].category}</p>
-                        <p>{}</p>
-                    </div>
-                    <div>
-                        <p>{str.split("%20").join(" ").split("%27").join(" ").split("%3F").join(" ").split("%22").join(" ").split("%2").join(" ")}</p>
-                    </div>
-                    <div>
-                        {questionData[questionNo].type == "multiple" ?
-                            this.multiQue(questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
-                                questionData[questionNo == 1 ? 0 : questionNo].correct_answer) :
-                            this.boolenQue(questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
-                                questionData[questionNo == 1 ? 0 : questionNo].correct_answer)}
+                        <div className='header-progressbar' style={{
+                            height: 10, backgroundColor: 'red',
+                            width: `${(questionNo / (questionData.length)) * 100}%`
+                        }}>
+
+                        </div>
+                        <div className="question_text w-75 mt-5 ">
+                            <h1>Question {questionNo == 1 ? 1 : questionNo} of {questionData.length}</h1>
+                            <p>{questionData[questionNo == 1 ? 0 : questionNo].category.split("%20").join(" ").split("%3A").join(" ")}</p>
+                            <p>{}</p>
+                        </div>
+                        <div>
+                            <p>{str}</p>
+                            {/* <p>{str.split("%20").join(" ").split("%27").join(" ").split("%3A").join(" ").split("%22").join(" ").split("%2").join(" ")}</p> */}
+                        </div>
+                        <div>
+                            {questionData[questionNo].type == "multiple" ?
+                                this.multiQue(questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
+                                    questionData[questionNo == 1 ? 0 : questionNo].correct_answer) :
+                                this.boolenQue(questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
+                                    questionData[questionNo == 1 ? 0 : questionNo].correct_answer)}
+                        </div>
+                        <div className='bottom-progressbar'>
+                            <div className='d-flex '>
+                                <p className='mr-auto p-2' >current Score{currentScore}%</p>
+                                <p className='' > expected Score{expectedRemaningCorrectScore}%</p>
+                            </div>
+                            {/* <p className='d-flex  justify-content-end'>Max Score{maxScore}%</p> */}
+                            {/* <p className='d-flex justify-content-start'>{(correctAns && questionAttemp) == 0 ? '0' : (correctAns / questionAttemp) * 100}</p> */}
+
+                            <div>
+                                <div className='' style={{ height: 20, backgroundColor: 'blue', width: `${expectedRemaningWrongScore}%` }}></div>
+                                <div className='' style={{ height: 20, backgroundColor: 'red', width: `${currentScore}%` }}></div>
+                                <div className='' style={{ height: 10, backgroundColor: 'green', width: `${expectedRemaningCorrectScore}%` }}></div>
+
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-                <div className='bottom-progressbar d-flex flex-row"'>
-                    <p className='d-flex justify-content-start'>{(correctAns && questionAttemp) == 0 ? '0' : (correctAns / questionAttemp) * 100}</p>
-                    <p className='d-flex  justify-content-end'>Max Score{maxScore}%</p>
 
-                </div>
 
             </>
         )
