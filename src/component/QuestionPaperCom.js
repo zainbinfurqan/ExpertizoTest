@@ -14,14 +14,7 @@ export default class QuestionPaperCom extends Component {
             questoinRemaning: QuestionPaperData.length
         }
     }
-    componentDidMount() {
-        let { questionNo, questionData } = this.state;
-        console.log(QuestionPaperData)
-        // let data = JSON.parse(QuestionPaperData);
-        console.log(questionData.length)
-        console.log(questionNo)
-        console.log((questionNo / (questionData.length)) * 100)
-    }
+  
 
     getRateFN = (ind) => {
         // let val_ = questionData[ind].difficulty
@@ -36,20 +29,26 @@ export default class QuestionPaperCom extends Component {
         // )
     }
     checkAnswer(ans) {
-        let { questionNo, questionData, correctAns, questionAttemp } = this.state
-        if (questionData[questionNo].correct_answer == ans) {
-            console.log(questionNo++)
-            this.setState({
-                questionNo: questionNo++,
-                correctAns: correctAns++,
-                questionAttemp: questionAttemp++
-            })
+        let { questionNo, questionData, correctAns, questionAttemp } = this.state;
+        console.log(questionNo, questionData.length -1)
+        if (questionNo != questionData.length-1) {
+            if (questionData[questionNo].correct_answer == ans) {
+                console.log(questionNo++)
+                this.setState({
+                    questionNo: questionNo++,
+                    correctAns: correctAns++,
+                    questionAttemp: questionAttemp++
+                })
+            } else {
+                console.log("wrong")
+            }
         } else {
-            console.log("wrong")
+
         }
         // questionData[questionNo].correct_answer == ans ?
         //     console.log(questionNo++) : console.log("wrong")
     }
+
 
     boolenQue = () => {
         return (
@@ -93,7 +92,6 @@ export default class QuestionPaperCom extends Component {
     render() {
         let { questionNo, questionData, maxScore, correctAns, questionAttemp } = this.state;
         let str = questionData[questionNo == 1 ? 0 : questionNo].question;
-        console.log(questionNo)
         return (
             <>
                 <div className="">
@@ -109,7 +107,6 @@ export default class QuestionPaperCom extends Component {
                         <p>{}</p>
                     </div>
                     <div>
-                        {/* <p>{questionData[questionNo == 1 ? 0 : questionNo].question}</p> */}
                         <p>{str.split("%20").join(" ").split("%27").join(" ").split("%3F").join(" ").split("%22").join(" ").split("%2").join(" ")}</p>
                     </div>
                     <div>
