@@ -5,7 +5,7 @@ export default class QuestionPaperCom extends Component {
     constructor() {
         super()
         this.state = {
-            questionNo: 1,
+            questionNo: 10,
             questionData: QuestionPaperData,
             correctAns: 0,
             incorrectAns: 0,
@@ -35,48 +35,65 @@ export default class QuestionPaperCom extends Component {
         //     < div > </div>
         // )
     }
-
-    boolenQue = (type = 'boolen') => {
-        if (type = 'boolen') {
-            return (
-                <>
-                    <div>
-                        <button>
-                            True
-                        </button>
-                        <button>
-                            False
-                        </button>
-                    </div>
-                </>
-            )
+    checkAnswer(ans) {
+        let { questionNo, questionData, correctAns, questionAttemp } = this.state
+        if (questionData[questionNo].correct_answer == ans) {
+            console.log(questionNo++)
+            this.setState({
+                questionNo: questionNo++,
+                correctAns: correctAns++,
+                questionAttemp: questionAttemp++
+            })
+        } else {
+            console.log("wrong")
         }
+        // questionData[questionNo].correct_answer == ans ?
+        //     console.log(questionNo++) : console.log("wrong")
     }
 
-    multiQue = (type, wrongAnsData, rightAns) => {
-        if (type = 'multiple') {
-            return (
-                <>
-                    <div>
-                        <button>
-                            {rightAns.split("%20").join(" ")}
+    boolenQue = () => {
+        return (
+            <>
+                <div>
+                    <button onClick={() => this.checkAnswer("True")}>
+                        True
                         </button>
-                        {wrongAnsData.map(itm => {
-                            return (
-                                <button>
-                                    {itm.split("%20").join(" ")}
+                    <button onClick={() => this.checkAnswer("False")}>
+                        False
+                        </button>
+                </div>
+            </>
+        )
+    }
+
+    multiQue = (wrongAnsData, rightAns) => {
+        let strFor_2 = rightAns.split("%20").join(" ")
+        return (
+            <>
+                <div>
+                    <button onClick={() => this.checkAnswer(rightAns)}>
+                        {strFor_2}
+                    </button>
+                    {wrongAnsData.map(itm => {
+                        strFor_2 = itm.split("%20").join(" ").split("%2C").join(" ")
+
+                        return (
+                            <>
+                                < button onClick={() => this.checkAnswer(itm)}>
+                                    {strFor_2}
                                 </button>
-                            )
-                        })}
-                    </div>
-                </>
-            )
-        }
+                            </>
+                        )
+                    })}
+                </div>
+            </>
+        )
     }
 
     render() {
         let { questionNo, questionData, maxScore, correctAns, questionAttemp } = this.state;
         let str = questionData[questionNo == 1 ? 0 : questionNo].question;
+        console.log(questionNo)
         return (
             <>
                 <div className="">
@@ -93,13 +110,14 @@ export default class QuestionPaperCom extends Component {
                     </div>
                     <div>
                         {/* <p>{questionData[questionNo == 1 ? 0 : questionNo].question}</p> */}
-                        <p>{str.split("%20").join(" ").split("%27").join(" ").split("%3F").join(" ")}</p>
+                        <p>{str.split("%20").join(" ").split("%27").join(" ").split("%3F").join(" ").split("%22").join(" ").split("%2").join(" ")}</p>
                     </div>
                     <div>
                         {questionData[questionNo].type == "multiple" ?
-                            this.multiQue("multiple", questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
+                            this.multiQue(questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
                                 questionData[questionNo == 1 ? 0 : questionNo].correct_answer) :
-                            this.boolenQue("multiple")}
+                            this.boolenQue(questionData[questionNo == 1 ? 0 : questionNo].incorrect_answers,
+                                questionData[questionNo == 1 ? 0 : questionNo].correct_answer)}
                     </div>
                 </div>
                 <div className='bottom-progressbar d-flex flex-row"'>
